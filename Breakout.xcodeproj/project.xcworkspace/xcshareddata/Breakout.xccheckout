@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>86756D4F-73FB-4054-A1F0-7043F8EA9E7B</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1D24E0B931E6ABAE817A4D3C1939989818FEE8FF</key>
+		<string>https://github.com/HANICA/MAD-student-MeesSchillemans.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Breakout/Breakout.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1D24E0B931E6ABAE817A4D3C1939989818FEE8FF</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/HANICA/MAD-student-MeesSchillemans.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1D24E0B931E6ABAE817A4D3C1939989818FEE8FF</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1D24E0B931E6ABAE817A4D3C1939989818FEE8FF</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MAD-student-MeesSchillemans</string>
+		</dict>
+	</array>
+</dict>
+</plist>
