@@ -65,22 +65,17 @@ class BreakoutBehavior: UIDynamicBehavior {
     }
     
     func pushBall(ball: UIView) {
+        
         let push = UIPushBehavior(items: [ball], mode: .Instantaneous)
         push.magnitude = 0.3
         
-        // Onderstaande code gekopieerd om de hoek van de ball te bepalen.
-        // Gekopieerd van https://github.com/sanjibahmad/Animation/blob/master/Animation/BreakoutBehavior.swift
-        let linearVelocity = ballBehavior.linearVelocityForItem(ball)
-        // derive the opposite angle from current velocity
-        let currentAngle = Double(atan2(linearVelocity.y, linearVelocity.x))
-        let oppositeAngle = CGFloat((currentAngle + M_PI) % (2 * M_PI))
+        let randomLower = Double(90 - (arc4random_uniform(20) + 10))
+        let randomHigher = Double(90 - (arc4random_uniform(20) + 10))
+        let lower =  CGFloat((randomLower * M_PI)/180)
+        let upper = CGFloat((randomHigher * M_PI)/180)
+        let angle = CGFloat.randomRadian(lower: lower,upper)
+        push.angle = angle
         
-        // add 30 degrees variation for random
-        let lower = oppositeAngle - CGFloat.degreeToRadian(30)
-        let upper = oppositeAngle + CGFloat.degreeToRadian(30)
-        push.angle = CGFloat.randomRadian(lower: lower, upper)
-        
-
 
         push.action = { [weak push] in
             if !push!.active {
