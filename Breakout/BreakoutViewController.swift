@@ -26,6 +26,8 @@ class BreakoutViewController: UIViewController {
         static let rightBarrier = "rightBarrier"
         static let paddleBarrier = "paddleBarrier"
     }
+    
+    private var breakoutBehavior = BreakoutBehavior()
 
     @IBOutlet var gameView: UIView!
     @IBOutlet weak var instructionsLabel: UILabel!
@@ -41,10 +43,7 @@ class BreakoutViewController: UIViewController {
                 breakoutBehavior.pushBall(ball)
             } else {
                 if (breakoutBehavior.balls.count == 0) {
-                    let ball = createBall()
-                    placeBallOnField(ball)
-                    breakoutBehavior.addBall(ball)
-                    breakoutBehavior.pushBall(ball)
+                    createBalls()
                 } else {
                     // Required task 3
                     breakoutBehavior.pushBall(breakoutBehavior.balls.last!) //must be worked on
@@ -52,8 +51,6 @@ class BreakoutViewController: UIViewController {
             }
         }
     }
-    
-    private let breakoutBehavior = BreakoutBehavior()
     
     private lazy var animator: UIDynamicAnimator = {
         let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
@@ -90,21 +87,24 @@ class BreakoutViewController: UIViewController {
     // MARK: Paddle
     
     private lazy var paddleView: UIView = {
-        let paddleWidth = self.gameView.bounds.size.width / CGFloat(Constants.paddleWidthMargin)
-        let frame = CGRect(origin: CGPointZero, size: CGSize(width: paddleWidth, height: CGFloat(Constants.paddleHeight)))
-        
-        let paddleView = UIView(frame: frame)
+        let paddleView = UIView()
         paddleView.backgroundColor = Constants.paddleColor
-        
         self.gameView.addSubview(paddleView)
-        
         return paddleView
     }()
     
     func resetPaddle() {
-        let paddleWidth = self.gameView.bounds.size.width / CGFloat(Constants.paddleWidthMargin)
+        changePaddleSize()
         paddleView.center = CGPoint(x: self.gameView.bounds.width / 2, y: self.gameView.bounds.size.height / 5 * 4)
         addPaddleBarrier()
+    }
+    
+    func changePaddleSize() {
+        var paddleWidth = self.gameView.bounds.size.width / CGFloat(Constants.paddleWidthMargin)
+        paddleWidth = paddleWidth + CGFloat(settingsModel().paddleSize * 20)
+        let frame = CGRect(origin: CGPointZero, size: CGSize(width: paddleWidth, height: CGFloat(Constants.paddleHeight)))
+        paddleView.frame = frame
+        
     }
     
     private func addPaddleBarrier() {
@@ -126,6 +126,19 @@ class BreakoutViewController: UIViewController {
         return ball
     }
     
+    private func createBalls() {
+        let ball = createBall()
+        placeBallOnField(ball)
+        breakoutBehavior.addBall(ball)
+        breakoutBehavior.pushBall(breakoutBehavior.balls.last!)
+    }
+    
+    func spawnBalls() {
+        if(breakoutBehavior.balls.count < settingsModel().numberOfBalls) {
+            createBalls()
+        }
+    }
+    
     // MARK: Lifecycle
     
     override func viewDidLayoutSubviews() {
@@ -138,6 +151,37 @@ class BreakoutViewController: UIViewController {
         resetPaddle()
         breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
         animator.addBehavior(breakoutBehavior)
+        setBallTimer()
+        
+    }
+    private var timer: NSTimer?
+    private func setBallTimer() {
+        if(settingsModel().startOver && Constants.gameIsStarted) {
+            timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "spawnBalls", userInfo: nil, repeats: true)
+        }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        NSNotificationCenter.defaultCenter().addObserverForName(NSUserDefaultsDidChangeNotification,
+        object: nil,
+        queue: nil) { (notification) -> Void in
+            self.reset()
+        }
+    }
+    
+    func reset() {
+        for ball in breakoutBehavior.balls {
+            ball.removeFromSuperview()
+        }
+        timer?.invalidate()
+        animator.removeAllBehaviors()
+        breakoutBehavior = BreakoutBehavior()
+        animator.addBehavior(self.breakoutBehavior)
+        resetPaddle()
+        breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
+        
+        setBallTimer()
     }
     
 }

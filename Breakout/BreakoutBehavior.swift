@@ -100,13 +100,10 @@ class BreakoutBehavior: UIDynamicBehavior {
         addChildBehavior(push)
     }
 }
-
+//https://github.com/sanjibahmad/Animation/blob/master/Animation/BreakoutBehavior.swift
+//copied extension for random radians
 private extension CGFloat {
     static func randomRadian(lower: CGFloat = 0, _ upper: CGFloat = CGFloat(2 * M_PI)) -> CGFloat {
         return CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * (upper - lower) + lower
-    }
-    
-    static func degreeToRadian(degree: Double) -> CGFloat {
-        return CGFloat((degree * M_PI)/180)
     }
 }

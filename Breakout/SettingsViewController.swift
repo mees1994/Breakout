@@ -9,10 +9,6 @@
 import UIKit
 
 class SettingsViewController: UIViewController {
-
-// NSNotificationCenter.defaultCenter().addObserverForName(NSUserDefaultsDidChangeNotification,
-// object: nil,
-// queue: nil) { (notification) -> Void in }
     
     // Mark: outlets
     
@@ -46,7 +42,7 @@ class SettingsViewController: UIViewController {
     }
     
     @IBAction func startoverChanged(sender: UISwitch) {
-        let startOver = sender.selected
+        let startOver = sender.on
         settingsModel().startOver = startOver
     }
     

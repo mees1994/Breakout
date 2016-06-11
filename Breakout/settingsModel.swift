@@ -26,7 +26,9 @@ class settingsModel {
     
     var paddleSize: Int{
         get { return defaults.objectForKey(Constants.paddleSize) as? Int ?? 1}
-        set { defaults.setObject(newValue, forKey: Constants.paddleSize) }
+        set {
+            defaults.setObject(newValue, forKey: Constants.paddleSize)
+        }
     }
     
     var startOver: Bool{
