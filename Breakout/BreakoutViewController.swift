@@ -11,11 +11,19 @@ import UIKit
 class BreakoutViewController: UIViewController {
     
     private struct Constants {
-        static let paddleWidthMargin = 6;
+        static var gameIsStarted = false
+        
+        static let paddleWidthMargin = 4;
         static let paddleHeight = CGFloat(10);
         static let paddleColor = UIColor.brownColor()
         
         static let ballRadius = CGFloat(15)
+    }
+    
+    private struct PathNames {
+        static let topBarrier = "topBarrier"
+        static let leftBarrier = "leftBarrier"
+        static let rightBarrier = "rightBarrier"
     }
 
     @IBOutlet var gameView: UIView!
@@ -23,12 +31,14 @@ class BreakoutViewController: UIViewController {
     
     @IBAction func startGame(sender: UITapGestureRecognizer) {
         if sender.state == .Ended {
-            instructionsLabel.hidden = true
-            let ball = createBall()
-            placeBallOnField(ball)
-            breakoutBehavior.addBall(ball)
-            
-            breakoutBehavior.pushBall(ball)
+            if (!Constants.gameIsStarted) {
+                instructionsLabel.hidden = true
+                Constants.gameIsStarted = true
+                let ball = createBall()
+                placeBallOnField(ball)
+                breakoutBehavior.addBall(ball)
+                breakoutBehavior.pushBall(ball)
+            }
         }
     }
     
@@ -47,9 +57,24 @@ class BreakoutViewController: UIViewController {
         case .Ended: fallthrough
         case .Changed:
             paddleView.frame.origin.x = max(min(paddleView.frame.origin.x + sender.translationInView(gameView).x, gameView.bounds.maxX - paddleView.frame.size.width), 0.0)
+            addPaddleBarrier()
             sender.setTranslation(CGPointZero, inView: gameView)
         default: break
         }
+    }
+    
+    // Mark: PlayField
+    
+    private func createPlayFieldBounds() {
+        let topLeftPoint = CGPoint(x: gameView.bounds.origin.x, y: gameView.bounds.origin.y)
+        let bottomLeftPoint = CGPoint(x: gameView.bounds.origin.x, y: gameView.bounds.maxY)
+        let topRightPoint = CGPoint(x: gameView.bounds.maxX, y: gameView.bounds.origin.y)
+        let bottomRightPoint = CGPoint(x: gameView.bounds.maxX, y: gameView.bounds.maxY)
+        
+        breakoutBehavior.createBoundaryForPlayField(named: PathNames.topBarrier, fromPoint: topLeftPoint, toPoint: topRightPoint)
+        breakoutBehavior.createBoundaryForPlayField(named: PathNames.leftBarrier, fromPoint: bottomLeftPoint, toPoint: topLeftPoint)
+        breakoutBehavior.createBoundaryForPlayField(named: PathNames.rightBarrier, fromPoint: topRightPoint, toPoint: bottomRightPoint)
+        
     }
     
     // MARK: Paddle
@@ -68,7 +93,12 @@ class BreakoutViewController: UIViewController {
     
     func resetPaddle() {
         let paddleWidth = self.gameView.bounds.size.width / CGFloat(Constants.paddleWidthMargin)
-        paddleView.center = CGPoint(x: self.gameView.bounds.width / 2 - paddleWidth / 2, y: self.gameView.bounds.size.height / 5 * 4)
+        paddleView.center = CGPoint(x: self.gameView.bounds.width / 2, y: self.gameView.bounds.size.height / 5 * 4)
+        addPaddleBarrier()
+    }
+    
+    private func addPaddleBarrier() {
+        breakoutBehavior.addBarrier(UIBezierPath(rect: CGRect(origin: paddleView.frame.origin, size: paddleView.frame.size)), named: "paddleBarrier")
     }
     
     // MARK: ball
@@ -90,12 +120,12 @@ class BreakoutViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        resetPaddle()
-
+        createPlayFieldBounds()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        resetPaddle()
         animator.addBehavior(breakoutBehavior)
     }
     

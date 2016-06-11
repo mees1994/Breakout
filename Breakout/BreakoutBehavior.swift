@@ -14,9 +14,23 @@ class BreakoutBehavior: UIDynamicBehavior {
 
     private lazy var collider: UICollisionBehavior = {
         let lazilyCreatedCollider = UICollisionBehavior()
-        lazilyCreatedCollider.translatesReferenceBoundsIntoBoundary = true
+        lazilyCreatedCollider.collisionMode = UICollisionBehaviorMode.Boundaries
+        lazilyCreatedCollider.action = {
+            for item in lazilyCreatedCollider.items {
+                if let ball = item as? UIView {
+                    if !CGRectIntersectsRect(ball.frame, self.dynamicAnimator!.referenceView!.bounds) { // Remove each ball that isn't within the reference view
+                        self.removeBall(ball)
+                    }
+                }
+            }
+        }
         return lazilyCreatedCollider
     }()
+    
+    func createBoundaryForPlayField(named name: String, fromPoint: CGPoint, toPoint: CGPoint) {
+        collider.removeBoundaryWithIdentifier(name)
+        collider.addBoundaryWithIdentifier(name, fromPoint: fromPoint, toPoint: toPoint)
+    }
     
     private lazy var ballBehavior: UIDynamicItemBehavior = {
         let lazilyCreatedBallBehavior = UIDynamicItemBehavior()
@@ -43,6 +57,11 @@ class BreakoutBehavior: UIDynamicBehavior {
         collider.removeItem(ball)
         ballBehavior.removeItem(ball)
         ball.removeFromSuperview()
+    }
+    
+    func addBarrier(path: UIBezierPath, named name: String) {
+        collider.removeBoundaryWithIdentifier(name)
+        collider.addBoundaryWithIdentifier(name, forPath: path)
     }
     
     func pushBall(ball: UIView) {
