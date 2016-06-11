@@ -20,27 +20,27 @@ class settingsModel {
     private let defaults = NSUserDefaults.standardUserDefaults()
     
     var speedBalls: Int{
-        get { return defaults.objectForKey(Constants.speedBall) as! Int}
+        get { return defaults.objectForKey(Constants.speedBall) as? Int ?? 1}
         set { defaults.setObject(newValue, forKey: Constants.speedBall) }
     }
     
     var paddleSize: Int{
-        get { return defaults.objectForKey(Constants.paddleSize) as! Int}
+        get { return defaults.objectForKey(Constants.paddleSize) as? Int ?? 1}
         set { defaults.setObject(newValue, forKey: Constants.paddleSize) }
     }
     
     var startOver: Bool{
-        get { return defaults.objectForKey(Constants.startOver) as! Bool}
+        get { return defaults.objectForKey(Constants.startOver) as? Bool ?? false}
         set { defaults.setObject(newValue, forKey: Constants.startOver) }
     }
     
     var numberOfBalls: Int{
-        get { return defaults.objectForKey(Constants.numberOfBalls) as! Int}
+        get { return defaults.objectForKey(Constants.numberOfBalls) as? Int ?? 1}
         set { defaults.setObject(newValue, forKey: Constants.numberOfBalls) }
     }
     
     var brickHealth: Int{
-        get { return defaults.objectForKey(Constants.brickHealth) as! Int}
+        get { return defaults.objectForKey(Constants.brickHealth) as? Int ?? 0}
         set { defaults.setObject(newValue, forKey: Constants.brickHealth) }
     }
 }

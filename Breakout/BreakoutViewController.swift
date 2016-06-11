@@ -136,7 +136,7 @@ class BreakoutViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         resetPaddle()
-        breakoutBehavior.speed = CGFloat(settingsModel().speedBalls)
+        breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
         animator.addBehavior(breakoutBehavior)
     }
     
