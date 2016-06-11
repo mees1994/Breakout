@@ -5,7 +5,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Item 2-->
+        <!--Settings-->
         <scene sceneID="dmv-GB-n7T">
             <objects>
                 <viewController id="SUF-Em-Lq0" customClass="SettingsViewController" customModule="Breakout" customModuleProvider="target" sceneMemberID="viewController">
@@ -135,7 +135,7 @@
                             <constraint firstItem="Ofx-r0-dDH" firstAttribute="top" secondItem="Cju-yj-pPm" secondAttribute="bottom" constant="8" id="zf4-A5-FnW"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 2" id="Aej-eA-AsN"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="settings" id="Aej-eA-AsN"/>
                     <connections>
                         <outlet property="ballStepperLabel" destination="IMf-6w-7cc" id="Nhp-KY-GSL"/>
                         <outlet property="ballsStepper" destination="eNd-cP-v0Q" id="7TA-LG-CLt"/>
@@ -151,7 +151,7 @@
             </objects>
             <point key="canvasLocation" x="910" y="686"/>
         </scene>
-        <!--Item 1-->
+        <!--Breakout-->
         <scene sceneID="Omi-9N-iNA">
             <objects>
                 <viewController id="lyw-wx-Bff" customClass="BreakoutViewController" customModule="Breakout" customModuleProvider="target" sceneMemberID="viewController">
@@ -181,7 +181,7 @@
                             <outletCollection property="gestureRecognizers" destination="PQU-1s-qNL" appends="YES" id="ges-cI-evS"/>
                         </connections>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 1" id="XdW-Pd-hL4"/>
+                    <tabBarItem key="tabBarItem" title="Breakout" image="game-controller" id="XdW-Pd-hL4"/>
                     <connections>
                         <outlet property="gameView" destination="dwk-EO-rkb" id="tMf-pP-2SM"/>
                         <outlet property="instructionsLabel" destination="CZ6-uc-xPW" id="Cso-Iv-Q9W"/>
@@ -221,4 +221,8 @@
             <point key="canvasLocation" x="90" y="354"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="game-controller" width="24" height="24"/>
+        <image name="settings" width="24" height="24"/>
+    </resources>
 </document>
