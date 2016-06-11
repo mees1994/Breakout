@@ -46,6 +46,10 @@ class BreakoutBehavior: UIDynamicBehavior {
         addChildBehavior(collider)
         addChildBehavior(ballBehavior)
     }
+
+    var balls: [UIView] {
+        return ballBehavior.items.map{$0 as! UIView}
+    }
     
     func addBall(ball: UIView) {
         dynamicAnimator?.referenceView?.addSubview(ball)

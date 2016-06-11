@@ -24,6 +24,7 @@ class BreakoutViewController: UIViewController {
         static let topBarrier = "topBarrier"
         static let leftBarrier = "leftBarrier"
         static let rightBarrier = "rightBarrier"
+        static let paddleBarrier = "paddleBarrier"
     }
 
     @IBOutlet var gameView: UIView!
@@ -38,6 +39,16 @@ class BreakoutViewController: UIViewController {
                 placeBallOnField(ball)
                 breakoutBehavior.addBall(ball)
                 breakoutBehavior.pushBall(ball)
+            } else {
+                if (breakoutBehavior.balls.count == 0) {
+                    let ball = createBall()
+                    placeBallOnField(ball)
+                    breakoutBehavior.addBall(ball)
+                    breakoutBehavior.pushBall(ball)
+                } else {
+                    // Required task 3
+                    breakoutBehavior.pushBall(breakoutBehavior.balls.last!) //must be worked on
+                }
             }
         }
     }
@@ -74,7 +85,6 @@ class BreakoutViewController: UIViewController {
         breakoutBehavior.createBoundaryForPlayField(named: PathNames.topBarrier, fromPoint: topLeftPoint, toPoint: topRightPoint)
         breakoutBehavior.createBoundaryForPlayField(named: PathNames.leftBarrier, fromPoint: bottomLeftPoint, toPoint: topLeftPoint)
         breakoutBehavior.createBoundaryForPlayField(named: PathNames.rightBarrier, fromPoint: topRightPoint, toPoint: bottomRightPoint)
-        
     }
     
     // MARK: Paddle
@@ -98,7 +108,7 @@ class BreakoutViewController: UIViewController {
     }
     
     private func addPaddleBarrier() {
-        breakoutBehavior.addBarrier(UIBezierPath(rect: CGRect(origin: paddleView.frame.origin, size: paddleView.frame.size)), named: "paddleBarrier")
+        breakoutBehavior.addBarrier(UIBezierPath(rect: CGRect(origin: paddleView.frame.origin, size: paddleView.frame.size)), named: PathNames.paddleBarrier)
     }
     
     // MARK: ball
@@ -126,6 +136,7 @@ class BreakoutViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         resetPaddle()
+        breakoutBehavior.speed = CGFloat(settingsModel().speedBalls)
         animator.addBehavior(breakoutBehavior)
     }
     
