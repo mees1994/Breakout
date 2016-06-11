@@ -18,6 +18,9 @@ class BreakoutViewController: UIViewController {
         static let paddleColor = UIColor.brownColor()
         
         static let ballRadius = CGFloat(15)
+        
+        static let nBricksRows = 3
+        static let nBricksColumns = 5
     }
     
     private struct PathNames {
@@ -138,12 +141,40 @@ class BreakoutViewController: UIViewController {
             createBalls()
         }
     }
+
+    // MARK: Bricks
+    
+    private func createBricks() {
+        var row = 0
+        var column = 0
+
+        var brickWidth = gameView.frame.width / CGFloat(Constants.nBricksColumns)
+
+        while row <= Constants.nBricksRows {
+            while column <= Constants.nBricksColumns {
+                let brick = UIView(frame: CGRect(origin: CGPoint(x: brickWidth * CGFloat(column), y: (30.0 * CGFloat(row + 1))), size: CGSize(width: brickWidth, height: 30.0)))
+
+                brick.backgroundColor = UIColor.blueColor()
+                brick.layer.cornerRadius = 10.0
+                brick.layer.borderColor = UIColor.whiteColor().CGColor
+
+                gameView.addSubview(brick)
+                
+                column += 1
+            }
+            
+            column = 0
+            row += 1
+        }
+    }
+
     
     // MARK: Lifecycle
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         createPlayFieldBounds()
+        createBricks()
     }
     
     override func viewDidLoad() {
