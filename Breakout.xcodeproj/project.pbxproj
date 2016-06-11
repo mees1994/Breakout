@@ -14,6 +14,7 @@
 		8B43C87C1D0B0632001CCDD8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B43C87A1D0B0632001CCDD8 /* LaunchScreen.xib */; };
 		8B43C8881D0B0632001CCDD8 /* BreakoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B43C8871D0B0632001CCDD8 /* BreakoutTests.swift */; };
 		8B43C8921D0B078D001CCDD8 /* BreakoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B43C8911D0B078D001CCDD8 /* BreakoutViewController.swift */; };
+		8B43C8941D0B7208001CCDD8 /* BreakoutBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B43C8931D0B7208001CCDD8 /* BreakoutBehavior.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		8B43C8861D0B0632001CCDD8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B43C8871D0B0632001CCDD8 /* BreakoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutTests.swift; sourceTree = "<group>"; };
 		8B43C8911D0B078D001CCDD8 /* BreakoutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakoutViewController.swift; sourceTree = "<group>"; };
+		8B43C8931D0B7208001CCDD8 /* BreakoutBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakoutBehavior.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 			children = (
 				8B43C8731D0B0632001CCDD8 /* ViewController.swift */,
 				8B43C8911D0B078D001CCDD8 /* BreakoutViewController.swift */,
+				8B43C8931D0B7208001CCDD8 /* BreakoutBehavior.swift */,
 				8B43C8751D0B0632001CCDD8 /* Main.storyboard */,
 				8B43C86F1D0B0632001CCDD8 /* Supporting Files */,
 			);
@@ -217,6 +220,7 @@
 			files = (
 				8B43C8921D0B078D001CCDD8 /* BreakoutViewController.swift in Sources */,
 				8B43C8741D0B0632001CCDD8 /* ViewController.swift in Sources */,
+				8B43C8941D0B7208001CCDD8 /* BreakoutBehavior.swift in Sources */,
 				8B43C8721D0B0632001CCDD8 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

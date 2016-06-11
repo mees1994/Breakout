@@ -34,8 +34,20 @@
                     <view key="view" contentMode="scaleToFill" id="dwk-EO-rkb">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to start the game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CZ6-uc-xPW">
+                                <rect key="frame" x="219" y="289" width="163" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="CZ6-uc-xPW" secondAttribute="centerX" constant="-0.5" id="9VG-26-Qpt"/>
+                            <constraint firstAttribute="centerY" secondItem="CZ6-uc-xPW" secondAttribute="centerY" constant="0.5" id="Mvh-Oz-0Hp"/>
+                        </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="uZI-Rc-dqP" appends="YES" id="Kzz-vI-43z"/>
                             <outletCollection property="gestureRecognizers" destination="PQU-1s-qNL" appends="YES" id="ges-cI-evS"/>
@@ -44,6 +56,7 @@
                     <tabBarItem key="tabBarItem" title="Item 1" id="XdW-Pd-hL4"/>
                     <connections>
                         <outlet property="gameView" destination="dwk-EO-rkb" id="tMf-pP-2SM"/>
+                        <outlet property="instructionsLabel" destination="CZ6-uc-xPW" id="Cso-Iv-Q9W"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ibc-vD-VTu" userLabel="First Responder" sceneMemberID="firstResponder"/>
