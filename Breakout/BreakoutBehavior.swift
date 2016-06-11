@@ -64,10 +64,21 @@ class BreakoutBehavior: UIDynamicBehavior {
         collider.addBoundaryWithIdentifier(name, forPath: path)
     }
     
+    var speedVar:CGFloat = 0.3
+    
     func pushBall(ball: UIView) {
+        switch(speedVar){
+            case 1..<2: speedVar = 0.3
+            case 2..<3: speedVar = 0.6
+            case 3..<4: speedVar = 0.9
+            case 4..<5: speedVar = 1.2
+            case 5..<6: speedVar = 1.5
+        default: speedVar = 0.3
+        }
+        
         
         let push = UIPushBehavior(items: [ball], mode: .Instantaneous)
-        push.magnitude = 0.3
+        push.magnitude = speedVar
         
         let randomLower = Double(90 - (arc4random_uniform(20) + 10))
         let randomHigher = Double(90 - (arc4random_uniform(20) + 10))
