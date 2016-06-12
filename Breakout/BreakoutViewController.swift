@@ -52,8 +52,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                 bricks[brickPathName]!.brickLifes -= 1
                 let brickLifes = bricks[brickPathName]!.brickLifes
                 
-                println("lifes: \(brickLifes) brickhit \(bricks[brickPathName]!.brickHit)")
-                
                 if (!bricks[brickPathName]!.brickHit) {
                     bricks[brickPathName]!.brickHit = true
                     timerBrick = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: "setBrickHitFalse:", userInfo: ["brickPath": brickPathName], repeats: false)
@@ -84,8 +82,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                             animations: { },
                             completion: {
                                 if ($0) {
-//                                    self.bricks[brickPathName]!.brickView.removeFromSuperview()
-//                                    self.breakoutBehavior.removeBarrier(brickPathName)
                                     self.bricks.removeValueForKey(brickPathName)
                                 }
                                 if(self.bricks.count == 0) {
@@ -95,34 +91,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                         })
 
                     }
-                    
-//                    UIView.transitionWithView(bricks[brickPathName]!.brickView,
-//                        duration: 0.5,
-//                        options: UIViewAnimationOptions.TransitionFlipFromBottom,
-//                        animations: {
-//                            if (brickLifes >= 0) {
-//                                self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
-//                            }
-//                        }, completion: {
-//                            if ($0 && brickLifes <= 0) {
-//                                self.bricks[brickPathName]!.brickHit = false
-//                                UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
-//                                    duration: 0.3,
-//                                    options: UIViewAnimationOptions.CurveEaseInOut,
-//                                    animations: { },
-//                                    completion: {
-//                                        if ($0) {
-//                                            self.bricks[brickPathName]!.brickView.removeFromSuperview()
-//                                            self.breakoutBehavior.removeBarrier(brickPathName)
-//                                            self.bricks.removeValueForKey(brickPathName)
-//                                        }
-//                                        if(self.bricks.count == 0) {
-//                                            self.levelFinished()
-//                                        }
-//                                        self.timerBrick!.invalidate()
-//                                })
-//                            }
-//                        })
                 }
             }
         }
@@ -151,7 +119,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                 breakoutBehavior.pushBall(ball)
                 setBallTimer()
             } else {
-                if (breakoutBehavior.balls.count == 0) {
+                if (breakoutBehavior.balls.count < settingsModel().numberOfBalls) {
                     createBalls()
                     setBallTimer()
                 } else {
@@ -264,7 +232,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         let totalSpaceBetweenBricks = Constants.spaceBetweenBricks * CGFloat(Constants.nBricksColumns + 1)
         var brickWidth = (gameView.frame.width - totalSpaceBetweenBricks) / CGFloat(Constants.nBricksColumns)
         let lifes = Constants.brickLifes * settingsModel().brickHealth
-        println(settingsModel().brickHealth)
 
         while row <= Constants.nBricksRows {
             while column <= Constants.nBricksColumns {
