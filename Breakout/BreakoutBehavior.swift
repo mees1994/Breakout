@@ -11,6 +11,10 @@ import UIKit
 class BreakoutBehavior: UIDynamicBehavior {
     
     //private let gravity = UIGravityBehavior()
+    
+    var collisionDelegate: UICollisionBehaviorDelegate? {
+        didSet { collider.collisionDelegate = collisionDelegate}
+    }
 
     private lazy var collider: UICollisionBehavior = {
         let lazilyCreatedCollider = UICollisionBehavior()
@@ -66,6 +70,10 @@ class BreakoutBehavior: UIDynamicBehavior {
     func addBarrier(path: UIBezierPath, named name: String) {
         collider.removeBoundaryWithIdentifier(name)
         collider.addBoundaryWithIdentifier(name, forPath: path)
+    }
+    
+    func removeBarrier(name: String) {
+        collider.removeBoundaryWithIdentifier(name)
     }
     
     var speedVar:CGFloat = 0.3

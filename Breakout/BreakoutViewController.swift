@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BreakoutViewController: UIViewController {
+class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     
     private struct Constants {
         static var gameIsStarted = false
@@ -21,6 +21,7 @@ class BreakoutViewController: UIViewController {
         
         static let nBricksRows = 3
         static let nBricksColumns = 5
+        static let spaceBetweenBricks = CGFloat(10)
     }
     
     private struct PathNames {
@@ -59,6 +60,18 @@ class BreakoutViewController: UIViewController {
         let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
         return lazilyCreatedDynamicAnimator
     }()
+    
+    // MARK: - Delegates
+    
+    func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
+        if let brickPathName = identifier as? String {
+            if brickPathName.hasPrefix("brick") {
+                breakoutBehavior.removeBarrier(brickPathName)
+                
+                // Required task 2 must be done here
+            }
+        }
+    }
     
         
     // Mark: GestureRecognizer
@@ -148,17 +161,22 @@ class BreakoutViewController: UIViewController {
         var row = 0
         var column = 0
 
-        var brickWidth = gameView.frame.width / CGFloat(Constants.nBricksColumns)
+        let totalSpaceBetweenBricks = Constants.spaceBetweenBricks * CGFloat(Constants.nBricksColumns + 1)
+        var brickWidth = (gameView.frame.width - totalSpaceBetweenBricks) / CGFloat(Constants.nBricksColumns)
 
         while row <= Constants.nBricksRows {
             while column <= Constants.nBricksColumns {
-                let brick = UIView(frame: CGRect(origin: CGPoint(x: brickWidth * CGFloat(column), y: (30.0 * CGFloat(row + 1))), size: CGSize(width: brickWidth, height: 30.0)))
+                let frame = CGRect(origin: CGPoint(x: brickWidth * CGFloat(column) + Constants.spaceBetweenBricks * CGFloat(column + 1),
+                                                   y: 30.0 * CGFloat(row + 1) + Constants.spaceBetweenBricks * CGFloat(row + 1)),
+                                   size: CGSize(width: brickWidth, height: 30.0))
+                let brick = UIView(frame: frame)
 
                 brick.backgroundColor = UIColor.blueColor()
-                brick.layer.cornerRadius = 10.0
+                //brick.layer.cornerRadius = 10.0
                 brick.layer.borderColor = UIColor.whiteColor().CGColor
 
                 gameView.addSubview(brick)
+                breakoutBehavior.addBarrier(UIBezierPath(rect: brick.frame), named: "brick \(row) \(column)")
                 
                 column += 1
             }
@@ -179,6 +197,7 @@ class BreakoutViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        breakoutBehavior.collisionDelegate = self
         resetPaddle()
         breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
         animator.addBehavior(breakoutBehavior)
