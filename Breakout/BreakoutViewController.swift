@@ -45,41 +45,54 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     }()
     
     // MARK: - Delegates
-    
+    var timerBrick: NSTimer?
     func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
         if let brickPathName = identifier as? String {
             if brickPathName.hasPrefix("brick") {
                 bricks[brickPathName]!.brickLifes -= 1
                 let brickLifes = bricks[brickPathName]!.brickLifes
                 
-                // Required task 2
-                UIView.transitionWithView(bricks[brickPathName]!.brickView,
-                    duration: 0.5,
-                    options: UIViewAnimationOptions.TransitionFlipFromBottom,
-                    animations: {
-                        if (brickLifes >= 0) {
-                            self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
-                        }
-                }, completion: {
-                    if ($0 && brickLifes == 0) {
-                        UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
-                            duration: 0.3,
-                            options: UIViewAnimationOptions.CurveEaseInOut,
-                            animations: { },
-                            completion: {
-                                if ($0) {
-                                    self.bricks[brickPathName]!.brickView.removeFromSuperview()
-                                    self.breakoutBehavior.removeBarrier(brickPathName)
-                                    self.bricks.removeValueForKey(brickPathName)
-                                }
-                                if(self.bricks.count == 0) {
-                                    self.levelFinished()
-                                }
-                        })
-                    }
-                })
+                if (!bricks[brickPathName]!.brickHit) {
+                    bricks[brickPathName]!.brickHit = true
+                    timerBrick = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: "setBrickHitFalse:", userInfo: ["brickPath": brickPathName], repeats: false)
+                                
+                    // Required task 2
+                    UIView.transitionWithView(bricks[brickPathName]!.brickView,
+                        duration: 0.5,
+                        options: UIViewAnimationOptions.TransitionFlipFromBottom,
+                        animations: {
+                            if (brickLifes >= 0) {
+                                self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
+                            }
+                        }, completion: {
+                            if ($0 && brickLifes == 0) {
+                                UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
+                                    duration: 0.3,
+                                    options: UIViewAnimationOptions.CurveEaseInOut,
+                                    animations: { },
+                                    completion: {
+                                        if ($0) {
+                                            self.bricks[brickPathName]!.brickView.removeFromSuperview()
+                                            self.breakoutBehavior.removeBarrier(brickPathName)
+                                            self.bricks.removeValueForKey(brickPathName)
+                                        }
+                                        if(self.bricks.count == 0) {
+                                            self.levelFinished()
+                                        }
+                                        self.timerBrick!.invalidate()
+                                })
+                            }
+                    })
+                }
             }
         }
+    }
+    
+    func setBrickHitFalse(timer: NSTimer) {
+        let userInfo = timer.userInfo as! Dictionary<String, AnyObject>
+        var brickPathName:String = (userInfo["brickPath"] as! String)
+        bricks[brickPathName]!.brickHit = false
+        
     }
     
         
@@ -191,10 +204,12 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     private struct Brick {
         var brickView: UIView
         var brickLifes: NSInteger
+        var brickHit: Bool
         
-        init(view: UIView, lifes: NSInteger) {
+        init(view: UIView, lifes: NSInteger, hit: Bool) {
             brickView = view
             brickLifes = lifes
+            brickHit = hit
         }
     }
     
@@ -221,7 +236,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
 
                 gameView.addSubview(brick)
                 breakoutBehavior.addBarrier(UIBezierPath(rect: brick.frame), named: "brick \(row) \(column)")
-                bricks["brick \(row) \(column)"] = Brick(view: brick, lifes: lifes)
+                bricks["brick \(row) \(column)"] = Brick(view: brick, lifes: lifes, hit: false)
                 
                 column += 1
             }
