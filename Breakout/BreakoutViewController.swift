@@ -84,7 +84,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                                 if ($0) {
                                     self.bricks.removeValueForKey(brickPathName)
                                 }
-                                if(self.bricks.count == 0) {
+                                if(self.bricks.count <= 0) {
                                     self.levelFinished()
                                 }
                                 self.timerBrick!.invalidate()
@@ -204,8 +204,13 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     }
     
     func spawnBalls() {
-        if(breakoutBehavior.balls.count < settingsModel().numberOfBalls) {
-            createBalls()
+        if(settingsModel().startOver && Constants.gameIsStarted) {
+            if(breakoutBehavior.balls.count < settingsModel().numberOfBalls) {
+                createBalls()
+            }
+        }else{
+            timer?.invalidate()
+            timer = nil
         }
     }
 
@@ -275,6 +280,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     }
     private var timer: NSTimer?
     private func setBallTimer() {
+        println(settingsModel().startOver)
         if(settingsModel().startOver && Constants.gameIsStarted) {
             timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "spawnBalls", userInfo: nil, repeats: true)
         }
@@ -296,6 +302,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         }
         removeAllBricks()
         timer?.invalidate()
+        timer = nil
         animator.removeAllBehaviors()
         
         
