@@ -12,6 +12,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     
     private struct Constants {
         static var gameIsStarted = false
+        static var gameIsWon = false
         
         static let paddleWidthMargin = 4;
         static let paddleHeight = CGFloat(10);
@@ -204,7 +205,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     }
     
     func spawnBalls() {
-        if(settingsModel().startOver && Constants.gameIsStarted) {
+        if(settingsModel().startOver && Constants.gameIsStarted && !Constants.gameIsWon) {
             if(breakoutBehavior.balls.count < settingsModel().numberOfBalls) {
                 createBalls()
             }
@@ -280,7 +281,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     }
     private var timer: NSTimer?
     private func setBallTimer() {
-        println(settingsModel().startOver)
         if(settingsModel().startOver && Constants.gameIsStarted) {
             timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "spawnBalls", userInfo: nil, repeats: true)
         }
@@ -310,11 +310,14 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         animator.addBehavior(self.breakoutBehavior)
         
         resetPaddle()
+        println("vcreaterbricks)")
         createBricks()
         
         breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
         breakoutBehavior.collisionDelegate = self
         setBallTimer()
+        
+        Constants.gameIsWon = false
     }
     
     func removeDeathBricks() {
@@ -342,17 +345,26 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         for ball in breakoutBehavior.balls {
             ball.removeFromSuperview()
         }
-
+        Constants.gameIsWon = true
+        
         if NSClassFromString("UIAlertController") != nil {
-            let alertController = UIAlertController(title: "Game Over", message: "", preferredStyle: .Alert)
-            alertController.addAction(UIAlertAction(title: "Play Again", style: .Default, handler: { (action) in
+            let playAgain = UIAlertAction(title: "Play Again", style: .Default, handler: { (action) -> Void in
                 self.reset()
-            }))
+            })
+            
+            let alertController = UIAlertController(title: "Game Over", message: "it is over", preferredStyle: .Alert)
+            alertController.addAction(playAgain)
             presentViewController(alertController, animated: true, completion: nil)
         } else {
-            let alertView = UIAlertView(title: "Game Over", message: "asdf", delegate: self, cancelButtonTitle: "Play Again")
+            let alertView = UIAlertView(title: "Game Over", message: "the game is finished", delegate: self, cancelButtonTitle: "Play Again")
             alertView.show()
+            
         }
+    }
+    
+    //ios7 fix
+    func alertView(View: UIAlertView!, clickedButtonAtIndex buttonIndex: Int){
+        self.reset()
     }
     
 }
