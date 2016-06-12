@@ -13,6 +13,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     private struct Constants {
         static var gameIsStarted = false
         static var gameIsWon = false
+        static var nRandomPushes = 5
         
         static let paddleWidthMargin = 4;
         static let paddleHeight = CGFloat(10);
@@ -123,9 +124,10 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                 if (breakoutBehavior.balls.count < settingsModel().numberOfBalls) {
                     createBalls()
                     setBallTimer()
-                } else {
+                } else if (Constants.nRandomPushes > 0) {
                     // Required task 3
-                    breakoutBehavior.pushBall(breakoutBehavior.balls.last!) //must be worked on
+                    breakoutBehavior.pushBall(breakoutBehavior.balls.last!)
+                    Constants.nRandomPushes -= 1
                 }
             }
         }
@@ -311,6 +313,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         
         resetPaddle()
         createBricks()
+        Constants.nRandomPushes = 5
         
         breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
         breakoutBehavior.collisionDelegate = self
