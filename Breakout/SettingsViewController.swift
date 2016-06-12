@@ -70,9 +70,21 @@ class SettingsViewController: UIViewController {
         ballsStepper.wraps = true
         ballsStepper.autorepeat = true
         
+        speedBallSlider.value = Float(settingsModel().speedBalls)
+        speeBallLabel.text = "\(settingsModel().speedBalls)"
+        
+        paddleSizeSlider.value = Float(settingsModel().paddleSize)
+        paddleSizeLabel.text = "\(settingsModel().paddleSize)"
+        
+        ballsStepper.value = Double(settingsModel().numberOfBalls)
+        ballStepperLabel.text = "\(settingsModel().numberOfBalls)"
+        
+        startOverSwitch.setOn( settingsModel().startOver, animated: false)
+
+        brickSegmentedControl.selectedSegmentIndex = settingsModel().brickHealth
+
+        
+        
     }
-    
-    
-    
     
 }
