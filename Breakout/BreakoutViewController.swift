@@ -22,6 +22,9 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         static let nBricksRows = 3
         static let nBricksColumns = 5
         static let spaceBetweenBricks = CGFloat(10)
+        static let brickHeight = CGFloat(30)
+        static let brickColors = [UIColor.redColor(), UIColor.orangeColor(), UIColor.yellowColor()]
+        static let brickLifes = 2
     }
     
     private struct PathNames {
@@ -35,6 +38,49 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
 
     @IBOutlet var gameView: UIView!
     @IBOutlet weak var instructionsLabel: UILabel!
+    
+    private lazy var animator: UIDynamicAnimator = {
+        let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
+        return lazilyCreatedDynamicAnimator
+    }()
+    
+    // MARK: - Delegates
+    
+    func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
+        if let brickPathName = identifier as? String {
+            if brickPathName.hasPrefix("brick") {
+                bricks[brickPathName]!.brickLifes -= 1
+                let brickLifes = bricks[brickPathName]!.brickLifes
+                
+                // Required task 2
+                UIView.transitionWithView(bricks[brickPathName]!.brickView,
+                    duration: 0.5,
+                    options: UIViewAnimationOptions.TransitionFlipFromBottom,
+                    animations: {
+                        if (brickLifes >= 0) {
+                            self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
+                        }
+                }, completion: {
+                    if ($0 && brickLifes == 0) {
+                        UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
+                            duration: 0.3,
+                            options: UIViewAnimationOptions.CurveEaseInOut,
+                            animations: { },
+                            completion: {
+                                if ($0) {
+                                    self.bricks[brickPathName]!.brickView.removeFromSuperview()
+                                    self.breakoutBehavior.removeBarrier(brickPathName)
+                                    self.bricks.removeValueForKey(brickPathName)
+                                }
+                        })
+                    }
+                })
+            }
+        }
+    }
+    
+        
+    // Mark: GestureRecognizer
     
     @IBAction func startGame(sender: UITapGestureRecognizer) {
         if sender.state == .Ended {
@@ -55,26 +101,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
             }
         }
     }
-    
-    private lazy var animator: UIDynamicAnimator = {
-        let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
-        return lazilyCreatedDynamicAnimator
-    }()
-    
-    // MARK: - Delegates
-    
-    func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
-        if let brickPathName = identifier as? String {
-            if brickPathName.hasPrefix("brick") {
-                breakoutBehavior.removeBarrier(brickPathName)
-                
-                // Required task 2 must be done here
-            }
-        }
-    }
-    
-        
-    // Mark: GestureRecognizer
     
     @IBAction func movePaddle(sender: UIPanGestureRecognizer) {
         switch sender.state {
@@ -157,6 +183,18 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
 
     // MARK: Bricks
     
+    private struct Brick {
+        var brickView: UIView
+        var brickLifes: NSInteger
+        
+        init(view: UIView, lifes: NSInteger) {
+            brickView = view
+            brickLifes = lifes
+        }
+    }
+    
+    private var bricks = [String: Brick]()
+    
     private func createBricks() {
         var row = 0
         var column = 0
@@ -171,12 +209,12 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                                    size: CGSize(width: brickWidth, height: 30.0))
                 let brick = UIView(frame: frame)
 
-                brick.backgroundColor = UIColor.blueColor()
+                brick.backgroundColor = Constants.brickColors[Constants.brickLifes]
                 //brick.layer.cornerRadius = 10.0
-                brick.layer.borderColor = UIColor.whiteColor().CGColor
 
                 gameView.addSubview(brick)
                 breakoutBehavior.addBarrier(UIBezierPath(rect: brick.frame), named: "brick \(row) \(column)")
+                bricks["brick \(row) \(column)"] = Brick(view: brick, lifes: Constants.brickLifes)
                 
                 column += 1
             }
@@ -192,11 +230,11 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         createPlayFieldBounds()
-        createBricks()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        createBricks()
         breakoutBehavior.collisionDelegate = self
         resetPaddle()
         breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
