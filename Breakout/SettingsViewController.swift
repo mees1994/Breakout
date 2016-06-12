@@ -53,7 +53,7 @@ class SettingsViewController: UIViewController {
     }
     
     @IBAction func brickHealthChanged(sender: UISegmentedControl) {
-        let brickHealth = sender.selectedSegmentIndex
+        let brickHealth = sender.selectedSegmentIndex + 1
         settingsModel().brickHealth = brickHealth
     }
     

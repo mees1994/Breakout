@@ -24,7 +24,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         static let spaceBetweenBricks = CGFloat(10)
         static let brickHeight = CGFloat(30)
         static let brickColors = [UIColor.redColor(), UIColor.orangeColor(), UIColor.yellowColor()]
-        static let brickLifes = 2
+        static let brickLifes = 1
     }
     
     private struct PathNames {
@@ -72,6 +72,9 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                                     self.breakoutBehavior.removeBarrier(brickPathName)
                                     self.bricks.removeValueForKey(brickPathName)
                                 }
+                                if(self.bricks.count == 0) {
+                                    self.levelFinished()
+                                }
                         })
                     }
                 })
@@ -91,9 +94,11 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                 placeBallOnField(ball)
                 breakoutBehavior.addBall(ball)
                 breakoutBehavior.pushBall(ball)
+                setBallTimer()
             } else {
                 if (breakoutBehavior.balls.count == 0) {
                     createBalls()
+                    setBallTimer()
                 } else {
                     // Required task 3
                     breakoutBehavior.pushBall(breakoutBehavior.balls.last!) //must be worked on
@@ -201,6 +206,8 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
 
         let totalSpaceBetweenBricks = Constants.spaceBetweenBricks * CGFloat(Constants.nBricksColumns + 1)
         var brickWidth = (gameView.frame.width - totalSpaceBetweenBricks) / CGFloat(Constants.nBricksColumns)
+        let lifes = Constants.brickLifes * settingsModel().brickHealth
+        println(settingsModel().brickHealth)
 
         while row <= Constants.nBricksRows {
             while column <= Constants.nBricksColumns {
@@ -209,12 +216,12 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                                    size: CGSize(width: brickWidth, height: 30.0))
                 let brick = UIView(frame: frame)
 
-                brick.backgroundColor = Constants.brickColors[Constants.brickLifes]
+                brick.backgroundColor = Constants.brickColors[lifes]
                 //brick.layer.cornerRadius = 10.0
 
                 gameView.addSubview(brick)
                 breakoutBehavior.addBarrier(UIBezierPath(rect: brick.frame), named: "brick \(row) \(column)")
-                bricks["brick \(row) \(column)"] = Brick(view: brick, lifes: Constants.brickLifes)
+                bricks["brick \(row) \(column)"] = Brick(view: brick, lifes: lifes)
                 
                 column += 1
             }
@@ -256,20 +263,65 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         queue: nil) { (notification) -> Void in
             self.reset()
         }
+        removeDeathBricks()
     }
     
     func reset() {
         for ball in breakoutBehavior.balls {
             ball.removeFromSuperview()
         }
+        removeAllBricks()
         timer?.invalidate()
         animator.removeAllBehaviors()
+        
+        
         breakoutBehavior = BreakoutBehavior()
         animator.addBehavior(self.breakoutBehavior)
-        resetPaddle()
-        breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
         
+        resetPaddle()
+        createBricks()
+        
+        breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
+        breakoutBehavior.collisionDelegate = self
         setBallTimer()
+    }
+    
+    func removeDeathBricks() {
+        for brick in bricks {
+            if(brick.1.brickLifes < 1){
+                bricks.removeValueForKey(brick.0)
+                brick.1.brickView.removeFromSuperview()
+                breakoutBehavior.removeBarrier(brick.0)
+            }
+        }
+    }
+    
+    func removeAllBricks() {
+        for brick in bricks {
+            bricks.removeValueForKey(brick.0)
+            brick.1.brickView.removeFromSuperview()
+            breakoutBehavior.removeBarrier(brick.0)
+        }
+    }
+    
+
+    private func levelFinished() {
+        timer?.invalidate()
+        timer = nil
+        for ball in breakoutBehavior.balls {
+            ball.removeFromSuperview()
+        }
+
+        if NSClassFromString("UIAlertController") != nil {
+            let alertController = UIAlertController(title: "Game Over", message: "", preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "Play Again", style: .Default, handler: { (action) in
+                self.reset()
+            }))
+            presentViewController(alertController, animated: true, completion: nil)
+        } else {
+            let alertView = UIAlertView(title: "Game Over", message: "asdf", delegate: self, cancelButtonTitle: "Play Again")
+            alertView.show()
+        }
     }
     
 }

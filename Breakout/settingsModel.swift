@@ -42,7 +42,7 @@ class settingsModel {
     }
     
     var brickHealth: Int{
-        get { return defaults.objectForKey(Constants.brickHealth) as? Int ?? 0}
+        get { return defaults.objectForKey(Constants.brickHealth) as? Int ?? 1}
         set { defaults.setObject(newValue, forKey: Constants.brickHealth) }
     }
 }
