@@ -52,36 +52,77 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                 bricks[brickPathName]!.brickLifes -= 1
                 let brickLifes = bricks[brickPathName]!.brickLifes
                 
+                println("lifes: \(brickLifes) brickhit \(bricks[brickPathName]!.brickHit)")
+                
                 if (!bricks[brickPathName]!.brickHit) {
                     bricks[brickPathName]!.brickHit = true
                     timerBrick = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: "setBrickHitFalse:", userInfo: ["brickPath": brickPathName], repeats: false)
                     // Required task 2
-                    UIView.transitionWithView(bricks[brickPathName]!.brickView,
-                        duration: 0.5,
-                        options: UIViewAnimationOptions.TransitionFlipFromBottom,
-                        animations: {
-                            if (brickLifes >= 0) {
-                                self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
+                    if (brickLifes > 0) {
+                        UIView.transitionWithView(
+                            bricks[brickPathName]!.brickView,
+                            duration: 0.5,
+                            options: UIViewAnimationOptions.TransitionFlipFromBottom,
+                            animations: {
+                                if (brickLifes > 0) {
+                                    self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
+                                }
+                            },
+                            completion: {
+                                if($0){
+                                    self.bricks[brickPathName]!.brickHit = false
+                                }
                             }
-                        }, completion: {
-                            if ($0 && brickLifes <= 0) {
-                                UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
-                                    duration: 0.3,
-                                    options: UIViewAnimationOptions.CurveEaseInOut,
-                                    animations: { },
-                                    completion: {
-                                        if ($0) {
-                                            self.bricks[brickPathName]!.brickView.removeFromSuperview()
-                                            self.breakoutBehavior.removeBarrier(brickPathName)
-                                            self.bricks.removeValueForKey(brickPathName)
-                                        }
-                                        if(self.bricks.count == 0) {
-                                            self.levelFinished()
-                                        }
-                                        self.timerBrick!.invalidate()
-                                })
-                            }
+                        )
+                    } else {
+                        self.bricks[brickPathName]!.brickHit = false
+                        self.bricks[brickPathName]!.brickView.removeFromSuperview()
+                        self.breakoutBehavior.removeBarrier(brickPathName)
+                        UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
+                            duration: 0.3,
+                            options: UIViewAnimationOptions.CurveEaseInOut,
+                            animations: { },
+                            completion: {
+                                if ($0) {
+//                                    self.bricks[brickPathName]!.brickView.removeFromSuperview()
+//                                    self.breakoutBehavior.removeBarrier(brickPathName)
+                                    self.bricks.removeValueForKey(brickPathName)
+                                }
+                                if(self.bricks.count == 0) {
+                                    self.levelFinished()
+                                }
+                                self.timerBrick!.invalidate()
                         })
+
+                    }
+                    
+//                    UIView.transitionWithView(bricks[brickPathName]!.brickView,
+//                        duration: 0.5,
+//                        options: UIViewAnimationOptions.TransitionFlipFromBottom,
+//                        animations: {
+//                            if (brickLifes >= 0) {
+//                                self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
+//                            }
+//                        }, completion: {
+//                            if ($0 && brickLifes <= 0) {
+//                                self.bricks[brickPathName]!.brickHit = false
+//                                UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
+//                                    duration: 0.3,
+//                                    options: UIViewAnimationOptions.CurveEaseInOut,
+//                                    animations: { },
+//                                    completion: {
+//                                        if ($0) {
+//                                            self.bricks[brickPathName]!.brickView.removeFromSuperview()
+//                                            self.breakoutBehavior.removeBarrier(brickPathName)
+//                                            self.bricks.removeValueForKey(brickPathName)
+//                                        }
+//                                        if(self.bricks.count == 0) {
+//                                            self.levelFinished()
+//                                        }
+//                                        self.timerBrick!.invalidate()
+//                                })
+//                            }
+//                        })
                 }
             }
         }
@@ -90,7 +131,9 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
     func setBrickHitFalse(timer: NSTimer) {
         let userInfo = timer.userInfo as! Dictionary<String, AnyObject>
         var brickPathName:String = (userInfo["brickPath"] as! String)
-        bricks[brickPathName]!.brickHit = false
+        if(bricks[brickPathName] != nil){
+            bricks[brickPathName]!.brickHit = false
+        }
         
     }
     
