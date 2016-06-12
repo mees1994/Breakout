@@ -81,7 +81,7 @@ class SettingsViewController: UIViewController {
         
         startOverSwitch.setOn( settingsModel().startOver, animated: false)
 
-        brickSegmentedControl.selectedSegmentIndex = settingsModel().brickHealth
+        brickSegmentedControl.selectedSegmentIndex = (settingsModel().brickHealth - 1)
 
         
         
