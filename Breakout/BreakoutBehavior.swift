@@ -96,12 +96,11 @@ class BreakoutBehavior: UIDynamicBehavior {
         push.magnitude = speedVar
         
         let randomLower = Double(90 - (arc4random_uniform(20) + 10))
-        let randomHigher = Double(90 - (arc4random_uniform(20) + 10))
+        let randomHigher = Double(90 + (arc4random_uniform(20) + 10))
         let lower =  CGFloat((randomLower * M_PI)/180)
         let upper = CGFloat((randomHigher * M_PI)/180)
         let angle = CGFloat.randomRadian(lower: lower,upper)
         push.angle = angle
-        
 
         push.action = { [weak push] in
             if !push!.active {
