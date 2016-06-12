@@ -55,7 +55,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                 if (!bricks[brickPathName]!.brickHit) {
                     bricks[brickPathName]!.brickHit = true
                     timerBrick = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: "setBrickHitFalse:", userInfo: ["brickPath": brickPathName], repeats: false)
-                                
                     // Required task 2
                     UIView.transitionWithView(bricks[brickPathName]!.brickView,
                         duration: 0.5,
@@ -65,7 +64,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                                 self.bricks[brickPathName]!.brickView.backgroundColor = Constants.brickColors[brickLifes]
                             }
                         }, completion: {
-                            if ($0 && brickLifes == 0) {
+                            if ($0 && brickLifes <= 0) {
                                 UIView.transitionWithView(self.bricks[brickPathName]!.brickView,
                                     duration: 0.3,
                                     options: UIViewAnimationOptions.CurveEaseInOut,
@@ -82,7 +81,7 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
                                         self.timerBrick!.invalidate()
                                 })
                             }
-                    })
+                        })
                 }
             }
         }

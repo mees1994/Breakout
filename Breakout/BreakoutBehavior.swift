@@ -79,6 +79,7 @@ class BreakoutBehavior: UIDynamicBehavior {
     var speedVar:CGFloat = 0.3
     
     func pushBall(ball: UIView) {
+        println("push")
         switch(speedVar){
             case 1..<2: speedVar = 0.3
             case 2..<3: speedVar = 0.6
