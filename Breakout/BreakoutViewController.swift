@@ -310,7 +310,6 @@ class BreakoutViewController: UIViewController, UICollisionBehaviorDelegate {
         animator.addBehavior(self.breakoutBehavior)
         
         resetPaddle()
-        println("vcreaterbricks)")
         createBricks()
         
         breakoutBehavior.speedVar = CGFloat(settingsModel().speedBalls)
